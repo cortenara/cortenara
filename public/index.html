@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Content Creator Workspace</title>
+    <meta name="description" content="A secure workspace for content creators." />
+
+    <!-- Tailwind via CDN (no build step needed) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              ink: {
+                950: "#08090d",
+                900: "#0d1016",
+                800: "#141823",
+                700: "#1c2230",
+                600: "#2a3142",
+                500: "#3a4359",
+                400: "#5b6479",
+              },
+              brand: {
+                400: "#9d8cff",
+                500: "#7c6cff",
+                600: "#6452f0",
+                700: "#5141d4",
+              },
+            },
+            fontFamily: {
+              sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+      crossorigin
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+
+  <body
+    class="min-h-screen bg-ink-950 text-slate-100 font-sans antialiased selection:bg-brand-500/40"
+  >
+    <!-- ================== TOP BAR ================== -->
+    <header
+      id="topbar"
+      class="hidden border-b border-ink-700/70 bg-ink-900/80 backdrop-blur sticky top-0 z-40"
+    >
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-4"
+      >
+        <button
+          id="backBtn"
+          class="hidden text-slate-400 hover:text-white transition"
+          title="Back to dashboard"
+        >
+          <!-- arrow-left -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="m15 18-6-6 6-6" />
+          </svg>
+        </button>
+
+        <div class="flex items-center gap-2">
+          <div
+            class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 grid place-items-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-4 h-4 text-white"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m22 8-6 4 6 4V8Z" />
+              <rect width="14" height="12" x="2" y="6" rx="2" ry="2" />
+            </svg>
+          </div>
+          <div class="leading-tight">
+            <div class="text-sm font-semibold">Creator Studio</div>
+            <div id="contextLabel" class="text-[11px] text-slate-400">
+              Workspace
+            </div>
+          </div>
+        </div>
+
+        <div class="flex-1"></div>
+
+        <div class="hidden sm:flex items-center gap-2 text-xs text-slate-400">
+          <span id="userEmail"></span>
+        </div>
+        <button
+          id="logoutBtn"
+          class="text-xs px-3 py-1.5 rounded-md border border-ink-600 hover:border-brand-500 hover:text-white text-slate-300 transition"
+        >
+          Sign out
+        </button>
+      </div>
+    </header>
+
+    <!-- ================== AUTH VIEW ================== -->
+    <section
+      id="authView"
+      class="min-h-screen grid place-items-center px-4 py-10"
+    >
+      <div class="w-full max-w-md">
+        <div class="text-center mb-8">
+          <div
+            class="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 grid place-items-center mb-4"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-6 h-6 text-white"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m22 8-6 4 6 4V8Z" />
+              <rect width="14" height="12" x="2" y="6" rx="2" ry="2" />
+            </svg>
+          </div>
+          <h1 class="text-2xl font-semibold">Creator Studio</h1>
+          <p class="text-sm text-slate-400 mt-1">
+            Scripts, media, and analytics in one place.
+          </p>
+        </div>
+
+        <div class="rounded-2xl border border-ink-700 bg-ink-900/60 p-6">
+          <div class="flex gap-2 p-1 bg-ink-800 rounded-lg mb-5">
+            <button
+              data-auth-tab="login"
+              class="auth-tab flex-1 text-sm py-2 rounded-md bg-brand-600 text-white font-medium"
+            >
+              Sign in
+            </button>
+            <button
+              data-auth-tab="signup"
+              class="auth-tab flex-1 text-sm py-2 rounded-md text-slate-300"
+            >
+              Create account
+            </button>
+          </div>
+
+          <form id="authForm" class="space-y-4">
+            <div>
+              <label class="text-xs text-slate-400">Email</label>
+              <input
+                type="email"
+                id="emailInput"
+                required
+                autocomplete="email"
+                class="mt-1 w-full px-3 py-2 bg-ink-800 border border-ink-700 rounded-md text-sm focus:outline-none focus:border-brand-500"
+                placeholder="you@example.com"
+              />
+            </div>
+            <div>
+              <label class="text-xs text-slate-400">Password</label>
+              <input
+                type="password"
+                id="passwordInput"
+                required
+                minlength="6"
+                autocomplete="current-password"
+                class="mt-1 w-full px-3 py-2 bg-ink-800 border border-ink-700 rounded-md text-sm focus:outline-none focus:border-brand-500"
+                placeholder="••••••••"
+              />
+            </div>
+            <button
+              type="submit"
+              id="authSubmitBtn"
+              class="w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-md bg-brand-600 hover:bg-brand-500 transition text-white font-medium text-sm"
+            >
+              <span id="authSubmitLabel">Sign in</span>
+              <span
+                id="authSpinner"
+                class="hidden w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"
+              ></span>
+            </button>
+          </form>
+        </div>
+
+        <p class="text-[11px] text-slate-500 mt-4 text-center">
+          Configure your Firebase project in <code>public/script.js</code>.
+        </p>
+      </div>
+    </section>
+
+    <!-- ================== DASHBOARD VIEW ================== -->
+    <section id="dashboardView" class="hidden max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      <div class="flex items-end justify-between flex-wrap gap-4 mb-6">
+        <div>
+          <h2 class="text-2xl font-semibold tracking-tight">Your projects</h2>
+          <p class="text-sm text-slate-400">
+            Each project is a script, a media library, and a performance log.
+          </p>
+        </div>
+        <button
+          id="newProjectBtn"
+          class="inline-flex items-center gap-2 px-3.5 py-2 rounded-md bg-brand-600 hover:bg-brand-500 transition text-sm font-medium"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M5 12h14" />
+            <path d="M12 5v14" />
+          </svg>
+          New project
+        </button>
+      </div>
+
+      <div
+        id="projectsLoading"
+        class="hidden text-center py-16 text-slate-400 text-sm"
+      >
+        <div class="inline-flex items-center gap-2">
+          <span
+            class="w-4 h-4 border-2 border-slate-500 border-t-white rounded-full animate-spin"
+          ></span>
+          Loading projects…
+        </div>
+      </div>
+
+      <div
+        id="projectsEmpty"
+        class="hidden border border-dashed border-ink-700 rounded-2xl text-center py-16 px-6"
+      >
+        <div class="text-base font-medium">No projects yet</div>
+        <div class="text-sm text-slate-400 mt-1">
+          Create your first project to start writing.
+        </div>
+      </div>
+
+      <div
+        id="projectsGrid"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+      ></div>
+    </section>
+
+    <!-- ================== PROJECT VIEW ================== -->
+    <section
+      id="projectView"
+      class="hidden max-w-7xl mx-auto px-4 sm:px-6 py-6"
+    >
+      <div class="flex items-center justify-between flex-wrap gap-4 mb-4">
+        <div>
+          <h2
+            id="projectTitle"
+            class="text-2xl font-semibold tracking-tight"
+          ></h2>
+          <p
+            id="projectDescription"
+            class="text-sm text-slate-400 max-w-2xl"
+          ></p>
+        </div>
+
+        <!-- Multi-stage timer -->
+        <div
+          class="flex items-center gap-2 bg-ink-900/70 border border-ink-700 rounded-xl px-3 py-2"
+        >
+          <div class="flex items-center gap-1">
+            <button
+              data-stage="scripting"
+              class="stage-btn px-2.5 py-1 text-xs rounded-md text-slate-300 hover:text-white"
+            >
+              Scripting
+            </button>
+            <button
+              data-stage="media"
+              class="stage-btn px-2.5 py-1 text-xs rounded-md text-slate-300 hover:text-white"
+            >
+              Media
+            </button>
+            <button
+              data-stage="review"
+              class="stage-btn px-2.5 py-1 text-xs rounded-md text-slate-300 hover:text-white"
+            >
+              Review
+            </button>
+          </div>
+          <div class="w-px h-5 bg-ink-700"></div>
+          <div
+            id="timerDisplay"
+            class="text-sm font-mono tabular-nums text-slate-200 min-w-[64px] text-center"
+          >
+            00:00
+          </div>
+          <button
+            id="timerToggle"
+            class="text-xs px-2.5 py-1 rounded-md bg-brand-600 hover:bg-brand-500 transition text-white"
+          >
+            Start
+          </button>
+          <button
+            id="timerStop"
+            class="text-xs px-2.5 py-1 rounded-md border border-ink-600 hover:border-brand-500 transition text-slate-300"
+            title="Stop and save"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div
+        class="flex gap-1 p-1 bg-ink-900 border border-ink-700 rounded-lg w-fit mb-4"
+      >
+        <button
+          data-tab="script"
+          class="tab-btn text-sm px-4 py-2 rounded-md bg-brand-600 text-white"
+        >
+          Script + AI
+        </button>
+        <button
+          data-tab="media"
+          class="tab-btn text-sm px-4 py-2 rounded-md text-slate-300"
+        >
+          Media Assets
+        </button>
+        <button
+          data-tab="analytics"
+          class="tab-btn text-sm px-4 py-2 rounded-md text-slate-300"
+        >
+          YouTube Analytics
+        </button>
+      </div>
+
+      <!-- Tab 1: Script + AI -->
+      <div
+        id="tab-script"
+        class="tab-panel grid grid-cols-1 lg:grid-cols-3 gap-4"
+      >
+        <div class="lg:col-span-2">
+          <div
+            class="rounded-xl border border-ink-700 bg-ink-900/60 overflow-hidden"
+          >
+            <div
+              class="px-4 py-2 border-b border-ink-700 flex items-center justify-between text-xs text-slate-400"
+            >
+              <span>Script</span>
+              <span id="saveStatus">Saved</span>
+            </div>
+            <textarea
+              id="scriptEditor"
+              placeholder="Start writing your video script…"
+              class="w-full h-[60vh] bg-transparent p-4 text-sm leading-relaxed focus:outline-none resize-none"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="lg:col-span-1">
+          <div
+            class="rounded-xl border border-ink-700 bg-ink-900/60 flex flex-col h-[64vh]"
+          >
+            <div class="px-4 py-3 border-b border-ink-700">
+              <div class="text-sm font-semibold">AI Script Assistant</div>
+              <div class="text-[11px] text-slate-400">
+                Powered by Gemini · server-proxied
+              </div>
+            </div>
+            <div
+              id="chatThread"
+              class="flex-1 overflow-y-auto p-3 space-y-3 text-sm"
+            ></div>
+            <form
+              id="chatForm"
+              class="border-t border-ink-700 p-2 flex gap-2"
+            >
+              <input
+                id="chatInput"
+                type="text"
+                placeholder="Ask for a hook, outline, CTA…"
+                class="flex-1 px-3 py-2 bg-ink-800 border border-ink-700 rounded-md text-sm focus:outline-none focus:border-brand-500"
+              />
+              <button
+                type="submit"
+                id="chatSendBtn"
+                class="px-3 py-2 rounded-md bg-brand-600 hover:bg-brand-500 transition text-sm"
+              >
+                Send
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Media Assets -->
+      <div id="tab-media" class="tab-panel hidden">
+        <div class="flex items-center justify-between mb-3 gap-2 flex-wrap">
+          <div class="text-sm text-slate-400">
+            Files from your configured Drive folder.
+          </div>
+          <div class="flex items-center gap-2">
+            <input id="uploadInput" type="file" class="hidden" />
+            <button
+              id="uploadBtn"
+              class="text-xs px-3 py-1.5 rounded-md bg-brand-500 hover:bg-brand-400 text-white transition"
+            >
+              Upload
+            </button>
+            <button
+              id="refreshMediaBtn"
+              class="text-xs px-3 py-1.5 rounded-md border border-ink-600 hover:border-brand-500 transition"
+            >
+              Refresh
+            </button>
+          </div>
+        </div>
+        <div
+          id="uploadProgress"
+          class="hidden text-xs text-slate-300 mb-3 rounded-md border border-ink-700 bg-ink-900/60 p-2"
+        ></div>
+        <div
+          id="mediaLoading"
+          class="hidden text-center py-12 text-slate-400 text-sm"
+        >
+          <div class="inline-flex items-center gap-2">
+            <span
+              class="w-4 h-4 border-2 border-slate-500 border-t-white rounded-full animate-spin"
+            ></span>
+            Loading media…
+          </div>
+        </div>
+        <div id="mediaError" class="hidden text-sm text-rose-400 mb-3"></div>
+        <div
+          id="mediaGrid"
+          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3"
+        ></div>
+      </div>
+
+      <!-- Tab 3: YouTube Analytics -->
+      <div id="tab-analytics" class="tab-panel hidden">
+        <form
+          id="ytForm"
+          class="flex flex-wrap gap-2 items-end mb-4 rounded-xl border border-ink-700 bg-ink-900/60 p-3"
+        >
+          <div>
+            <label class="text-xs text-slate-400">Channel ID</label>
+            <input
+              id="ytChannelId"
+              type="text"
+              placeholder="UCxxxxxxxxxxxxxxxxxxxxxx"
+              class="mt-1 px-3 py-2 bg-ink-800 border border-ink-700 rounded-md text-sm focus:outline-none focus:border-brand-500"
+            />
+          </div>
+          <div class="text-xs text-slate-500 px-2">or</div>
+          <div>
+            <label class="text-xs text-slate-400">@ handle</label>
+            <input
+              id="ytHandle"
+              type="text"
+              placeholder="@yourhandle"
+              class="mt-1 px-3 py-2 bg-ink-800 border border-ink-700 rounded-md text-sm focus:outline-none focus:border-brand-500"
+            />
+          </div>
+          <button
+            type="submit"
+            id="ytLoadBtn"
+            class="px-3 py-2 rounded-md bg-brand-600 hover:bg-brand-500 transition text-sm"
+          >
+            Load videos
+          </button>
+        </form>
+
+        <div
+          id="ytLoading"
+          class="hidden text-center py-12 text-slate-400 text-sm"
+        >
+          <div class="inline-flex items-center gap-2">
+            <span
+              class="w-4 h-4 border-2 border-slate-500 border-t-white rounded-full animate-spin"
+            ></span>
+            Loading videos…
+          </div>
+        </div>
+        <div id="ytError" class="hidden text-sm text-rose-400 mb-3"></div>
+        <div
+          id="ytGrid"
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+        ></div>
+      </div>
+    </section>
+
+    <!-- ================== TOAST CONTAINER ================== -->
+    <div
+      id="toastRoot"
+      class="fixed bottom-5 right-5 z-50 space-y-2 w-[min(360px,calc(100vw-2.5rem))]"
+    ></div>
+
+    <!-- ================== NEW PROJECT MODAL ================== -->
+    <div
+      id="newProjectModal"
+      class="hidden fixed inset-0 z-50 grid place-items-center bg-black/60 backdrop-blur-sm px-4"
+    >
+      <div class="w-full max-w-md rounded-2xl border border-ink-700 bg-ink-900 p-6">
+        <h3 class="text-lg font-semibold">Create project</h3>
+        <p class="text-xs text-slate-400 mb-4">
+          Saved to your Firestore workspace.
+        </p>
+        <form id="newProjectForm" class="space-y-3">
+          <div>
+            <label class="text-xs text-slate-400">Name</label>
+            <input
+              id="newProjectName"
+              required
+              class="mt-1 w-full px-3 py-2 bg-ink-800 border border-ink-700 rounded-md text-sm focus:outline-none focus:border-brand-500"
+              placeholder="Episode 12 — pricing teardown"
+            />
+          </div>
+          <div>
+            <label class="text-xs text-slate-400">Description</label>
+            <textarea
+              id="newProjectDesc"
+              rows="3"
+              class="mt-1 w-full px-3 py-2 bg-ink-800 border border-ink-700 rounded-md text-sm focus:outline-none focus:border-brand-500 resize-none"
+              placeholder="One-line summary of the video idea."
+            ></textarea>
+          </div>
+          <div class="flex justify-end gap-2 pt-2">
+            <button
+              type="button"
+              id="newProjectCancel"
+              class="text-sm px-3 py-2 rounded-md text-slate-300 hover:text-white"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="text-sm px-3 py-2 rounded-md bg-brand-600 hover:bg-brand-500 transition text-white"
+            >
+              Create
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ================== APP SCRIPT ================== -->
+    <script type="module" src="/script.js"></script>
+  </body>
+</html>
