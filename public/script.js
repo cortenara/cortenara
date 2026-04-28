@@ -44,15 +44,16 @@ import {
  *    These values are public by design (Firebase identifies the project,
  *    real auth happens via Firebase Security Rules).
  */
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "YOUR_FIREBASE_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
+  apiKey: "AIzaSyBcMdPvkE4XxZmuuVlVLBDtvye0RdlURoU",
+  authDomain: "cortenara-9d0cf.firebaseapp.com",
+  projectId: "cortenara-9d0cf",
+  storageBucket: "cortenara-9d0cf.firebasestorage.app",
+  messagingSenderId: "722283269564",
+  appId: "1:722283269564:web:8ac6c14dbcc33f15fa6fb9",
+  measurementId: "G-VLH91K0V63"
 };
-
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
